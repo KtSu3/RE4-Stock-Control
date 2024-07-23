@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <title>RE4</title>
+        <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
+        <link rel="stylesheet" href="{% static 'app/css/Cadastros.css' %}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    </head>
+    <body>
+        <div class="sidebar">
+            <a class="nav-link" href="{% url 'menu_projeto' %}">
+                <span class="font-weight-bold">Projeto</span>
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownEquipamentos">
+                        <i class="material-icons">check</i>
+                        <span>Viabilidades</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'cv' %}">
+                            <i class="material-icons">add</i> Cadastrar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'vc' %}">
+                            <i class="material-icons">view_list</i> Cadastradas
+                        </a>
+                        
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownTestar" role="button">
+                        <i class="material-icons">build</i>
+                        <span>Técnicos</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'ct' %}">
+                            <i class="material-icons">check</i> Cadastrar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'tc' %}">
+                            <i class="material-icons">done_all</i> Cadastrados
+                        </a>
+                    </div>
+                </li>
+                
+            </ul>
+            
+        </div>
+        
+        <div class="box"  class="form-container">
+            {% csrf_token %}
+            <section class="header">
+              <h2>Cadastrar Viabilidade</h2>        
+            </section>
+        
+            <form id="form-conten"
+            id="form" class="form"
+            class="form-content"  class="form-section"
+            >
+                <ul>
+                    <li>
+                        <label for="Projetista">Projetista</label>
+                        <select id="Projetista" name="Projetista">
+                            <option value=" "> </option>
+                            <option value="KILLIAN SOARES">KILLIAN SOARES</option>
+                            <option value="RICHARD BORGES">RICHARD BORGES</option>
+                            <option value="LUAN MATUSZEWSKI">LUAN MATUSZESWSKI</option>
+                            <option value="MAICON SANTIAGO">MAICON SANTIAGO</option>
+                            <option value="RICARDO AUGUSTO">RICARDO AUGUSTO</option>
+                            <option value="JOÃO GUILHERME">JOÃO GUILHERME</option>
+                            <option value="RODRIGO SCHEUER">RODRIGO SCHEUER</option>
+                           
+                        </select>
+                    </li>
+                    <label for="descricaoProjetista">Informações do Projeto</label>
+                    <li>
+                        
+                        <textarea id="descricaoProjetista" name="descricaoProjetista" rows="4" cols="50"></textarea>
+                       
+                    </li>
+
+                    <li>
+                        <label for="Vendedor">Vendedor(a)</label>
+                        <select id="Vendedor" name="Vendedor">
+                            <option value=" "> </option>
+                            <option value="Alessandra Juvencio">Alessandra Juvencio</option>
+                            <option value="Alex Junior">Alex Junior</option>
+                            <option value="Camila Hens">Camila Hens</option>
+                            <option value="Daiane Cardoso">Daiane Cardoso</option>
+                            <option value="Danielly Miquelim">Danielly Miquelim</option>
+                            <option value="Debora Oliveira">Debora Oliveira</option>
+                            <option value="Gabrielli Almeida">Gabrielli Almeida</option>
+                            <option value="Jannaina Silva">Jannaina Silva</option>
+                            <option value="Jaqueline Alves">Jaqueline Alves</option>
+                            <option value="Maria Eduarda">Maria Eduarda</option>
+                            <option value="Perola Falcao">Perola Falcao</option>
+                            <option value="Priscila Moura">Priscila Moura</option>
+                            <option value="Renata Souza">Renata Souza</option>
+                            <option value="Tayane Verrilo">Tayane Verrilo</option>
+                            <option value="Fabiana Ayako">Fabiana Ayako</option>
+                            <option value="Rafaela Camilo">Rafaela Camilo</option>
+                            <option value="Alexsandra dos Santos">Alexsandra dos Santos</option>
+                            
+                        </select>
+                    </li>
+                    <label for="descricaoVendedor">Informações do Vendedor(a)</label>
+                    <li>
+                        
+                        <textarea id="descricaoVendedor" name="descricaoVendedor" rows="4" cols="50"></textarea>
+                       
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <label for="Viavel">Viavel?</label>
+                        <select id="Viavel" name="Viavel">
+                            <option value=" "> </option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </li>
+                </ul>
+
+                <button type="button" onclick="addViabilidade()">Cadastrar</button>
+                <button type="reset">Limpar Dados</button>
+                
+            </div>
+            
+        
+          </div>
+ 
+            <script>
+            async function addViabilidade() {
+            const vendedor = document.getElementById('Vendedor').value;
+            const projetista = document.getElementById('Projetista').value;
+            const descricaoVendedor = document.getElementById('descricaoVendedor').value;
+            const descricaoProjetista = document.getElementById('descricaoProjetista').value;
+            const viavel = document.getElementById('Viavel').value;
+
+            if (vendedor && projetista && descricaoVendedor && descricaoProjetista && viavel) {
+                try {
+                    const response = await fetch("{% url 'AddViabilidade' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        },
+                        body: JSON.stringify({
+                            vendedor: vendedor,
+                            projetista: projetista,
+                            descricaoVendedor: descricaoVendedor,
+                            descricaoProjetista: descricaoProjetista,
+                            viavel: viavel,
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert(data.success);
+                        location.reload();
+                    } else {
+                        alert(data.error || 'Erro ao Registrar');
+                    }
+                } catch (error) {
+                    alert('Erro na requisição: ' + error.message);
+                }
+            } else {
+                alert('Preencha todos os campos.');
+            }
+        }
+            </script>
+        </main> 
+    </body>
+</html>

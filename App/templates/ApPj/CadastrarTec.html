@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <title>RE4</title>
+        <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
+        <link rel="stylesheet" href="{% static 'app/css/Cadastros.css' %}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div class="sidebar">
+            <a class="nav-link" href="{% url 'menu_projeto' %}">
+                <span class="font-weight-bold">Projeto</span>
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownEquipamentos">
+                        <i class="material-icons">check</i>
+                        <span>Viabilidades</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'cv' %}">
+                            <i class="material-icons">add</i> Cadastrar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'vc' %}">
+                            <i class="material-icons">view_list</i> Cadastradas
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownTestar" role="button">
+                        <i class="material-icons">build</i>
+                        <span>Técnicos</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'ct' %}">
+                            <i class="material-icons">check</i> Cadastrar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'tc' %}">
+                            <i class="material-icons">done_all</i> Cadastrados
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="box">
+            {% csrf_token %}
+            <section class="header">
+              <h2>Cadastrar Técnico</h2>        
+            </section>
+        
+            <form id="form-conten"
+            id="form" class="form"
+            class="form-content"
+            >
+                <ul>
+                    <li>
+                        <label for="projeto_responsavel">Projetista</label>
+                        <select id="projeto_responsavel" name="projeto_responsavel">
+                            <option value=" "> </option>
+                            <option value="KILLIAN SOARES">KILLIAN SOARES</option>
+                            <option value="RICHARD BORGES">RICHARD BORGES</option>
+                            <option value="LUAN MATUSZEWSKI">LUAN MATUSZEWSKI</option>
+                            <option value="MAICON SANTIAGO">MAICON SANTIAGO</option>
+                            <option value="RICARDO AUGUSTO">RICARDO AUGUSTO</option>
+                            <option value="JOÃO GUILHERME">JOÃO GUILHERME</option>
+                            <option value="RODRIGO SCHEUER">RODRIGO SCHEUER</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label for="tecnico_responsavel">Técnico</label>
+                        <select id="tecnico_responsavel" name="tecnico_responsavel">
+                            <option value=" "> </option>
+                            <option value="Adailson">Adailson</option>
+                            <option value="Gustavo">Gustavo</option>
+                            <option value="Tiago">Tiago</option>
+                            <option value="Jonathan">Jonathan</option>
+                            <option value="Victor">Victor</option>
+                            <option value="Fabian">Fabian</option>
+                            <option value="Wesley">Wesley</option>
+                            <option value="Jadson">Jadson</option>
+                            <option value="Daniel">Daniel</option>
+                            <option value="Felipe">Felipe</option>
+                            <option value="Jonas">Jonas</option>
+                            <option value="Devair">Devair</option>
+                            <option value="Bruno">Bruno</option>
+                            <option value="Donizete">Donizete</option>
+                            <option value="Afonso">Afonso</option>
+                            <option value="Silvio">Silvio</option>
+                            <option value="Leonardo">Leonardo</option>
+                            <option value="Marcos">Marcos</option>
+                            <option value="João">João</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label for="Assunto">Assunto</label>
+                        <select id="Assunto" name="Assunto">
+                            <option value=""></option>
+                            <option value="Verificação de Caixa">Verificação de Caixa</option>
+                            <option value="Verificação de Histórico de ONU">Verificação de Histórico de ONU</option>
+                            <option value="Verificação de Pppoe">Verificação de Pppoe</option>
+                            <option value="Verificação de Rota">Verificação de Rota</option>
+                            <option value="Identificação de Cliente na Caixa">Identificação de Cliente na Caixa</option>
+                            <option value="Checklist de Caixa">Checklist de Caixa</option>
+                            <option value="Auxilio a Configuração">Auxilio a Configuração</option>
+                            <option value="Repasse de Dados Cadastrais">Repasse de Dados Cadastrais</option>
+                            <option value="Provisionamento">Provisionamento</option>
+                            <option value="Limpeza de Pppoe">Limpeza de Pppoe</option>
+                        
+                        </select>
+                    </li>
+                    <label for="info_atendimento">Informações do Atendimento</label>
+                    <li>
+                        
+                        <textarea id="info_atendimento" name="info_atendimento" rows="4" cols="50"></textarea>
+                    </li>
+                </ul>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+        <script>
+            document.getElementById('form-conten').addEventListener('submit', AddTecnico);
+        
+            async function AddTecnico(event) {
+                event.preventDefault();
+                const projeto_responsavel = document.getElementById('projeto_responsavel').value;
+                const tecnico_responsavel = document.getElementById('tecnico_responsavel').value;
+                const Assunto = document.getElementById('Assunto').value;
+                const info_atendimento = document.getElementById('info_atendimento').value;
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+                if (projeto_responsavel && tecnico_responsavel && info_atendimento && Assunto) {
+                    const response = await fetch("{% url 'AddTecnico' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            projeto_responsavel,
+                            tecnico_responsavel,
+                            Assunto,
+                            info_atendimento,
+                        })
+                    });
+        
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert(data.success);
+                        location.reload();
+                    } else {
+                        alert(data.error || 'Erro ao registrar');
+                    }
+                } else {
+                    alert('Por favor, preencha todos os campos.');
+                }
+            }
+        </script>
+        
+    </body>
+</html>

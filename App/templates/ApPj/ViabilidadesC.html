@@ -1,0 +1,137 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>RE4</title>
+    <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
+    <link rel="stylesheet" href="{% static 'app/css/Cadastrados.css' %}">
+    <link rel='stylesheet' href="{% static 'app/css/ViabilidadesC' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+    
+</head>
+<body>    
+    <div class="sidebar">
+        <a class="nav-link" href="{% url 'menu_projeto' %}">
+            <span class="font-weight-bold">Projeto</span>
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownEquipamentos">
+                    <i class="material-icons">check</i>
+                    <span>Viabilidades</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'cv' %}">
+                        <i class="material-icons">add</i> Cadastrar
+                    </a>
+                    <a class="dropdown-item" href="{% url 'vc' %}">
+                        <i class="material-icons">view_list</i> Cadastradas
+                    </a>
+                    
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownTestar" role="button">
+                    <i class="material-icons">build</i>
+                    <span>Técnicos</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'ct' %}">
+                        <i class="material-icons">check</i> Cadastrar
+                    </a>
+                    <a class="dropdown-item" href="{% url 'tc' %}">
+                        <i class="material-icons">done_all</i> Cadastrados
+                    </a>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <h1>Viabilidades Cadastradas</h1>
+                <div class="input-group">
+                    <input type="Pesquisar" placeholder="Procurar por Projetista ou Vendedor">
+                    
+                </div>
+                {% comment %} <div class="export__file">
+                    <label for="export-file" class="export__file-btn" title="Export File"></label>
+                    <input type="checkbox" id="export-file">
+                    <div class="export__file-options">
+                        <label>Export As &nbsp; &#10140;</label>
+                        <label for="export-file" id="toPDF">PDF<img src="img/pdf.png" alt=""></label>
+                        <label for="export-file" id="toCSV">CSV<img src="img/csv.png" alt=""></label>
+                        <label for="export-file" id="toEXCEL">EXCEL <img src="img/excel.png" alt=""></label>
+                    </div> {% endcomment %}
+                </div>
+            </section>
+            <section class="table__body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Projetista<span class="icon-arrow">&UpArrow;</span></th>
+                            <th>Vendedor<span class="icon-arrow">&UpArrow;</span></th>
+                            <th>Descrição Projetista<span class="icon-arrow">&UpArrow;</span></th>
+                            <th>Descrição Vendedor<span class="icon-arrow">&UpArrow;</span></th>
+                            <th>Viavel?<span class="icon-arrow">&UpArrow;</span></th>
+                            {% comment %} <th>Data<span class="icon-arrow">&UpArrow;</span></th> {% endcomment %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for viabilidade in viabilidades %}
+                        <tr>
+                            <td>{{ viabilidade.projeto_responsavel }}</td>
+                            <td>{{ viabilidade.comercial_responsavel }}</td>
+                            <div class="tamanho">
+                            <td>{{ viabilidade.descricao_projeto }}</td>
+                            <td>{{ viabilidade.descricao_comercial }}</td>
+                            </div>
+                            <td>{{ viabilidade.status }}</td>
+                            {% comment %} <td>{{ viabilidade.coluna_timestamp }}</td> {% endcomment %}
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+              
+            </section>
+            {% comment %} <div class="pagination-container">
+                <button id="prev-button">Anterior</button>
+                <span id="page-info"></span>
+                <button id="next-button">Próximo</button>
+            </div> {% endcomment %}
+            
+    </main>
+        <script>
+            document.getElementById('search-projetista').addEventListener('keyup', function() {
+                filterTable('search-projetista', 0);
+            });
+            document.getElementById('search-vendedor').addEventListener('keyup', function() {
+                filterTable('search-vendedor', 1);
+            });
+            function filterTable(inputId, columnIndex) {
+                const input = document.getElementById(inputId);
+                const filter = input.value.toUpperCase();
+                const table = document.getElementById('viabilidades-table');
+                const tr = table.getElementsByTagName('tr');
+                for (let i = 1; i < tr.length; i++) {
+                    const td = tr[i].getElementsByTagName('td')[columnIndex];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = '';
+                        } else {
+                            tr[i].style.display = 'none';
+                        }
+                    }
+                }
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,191 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>RE4</title>
+    <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+
+    
+    <div class="sidebar">
+        <a class="nav-link" href="{% url 'menu_view' %}">
+            <span class="font-weight-bold">Estoque TI</span>
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownEquipamentos">
+                    <i class="material-icons">devices</i>
+                    <span>Equipamentos</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'register' %}">
+                        <i class="material-icons">add</i> Cadastrar
+                    </a>
+                    <a class="dropdown-item" href="{% url 'list_equipamentos' %}">
+                        <i class="material-icons">view_list</i> Cadastrados
+                    </a>
+                    <a class="dropdown-item" href="{% url 'campo' %}">
+                        <i class="material-icons">assignment</i> Para Campo
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownTestar" role="button">
+                    <i class="material-icons">build</i>
+                    <span>Testar</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'testar' %}">
+                        <i class="material-icons">check</i> Equipamento
+                    </a>
+                    <a class="dropdown-item" href="{% url 'teste_concluido' %}">
+                        <i class="material-icons">done_all</i> Testados
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownRetorno" role="button">
+                    <i class="material-icons">repeat</i>
+                    <span>Retorno</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'equipamento_reteste' %}">
+                        <i class="material-icons">autorenew</i> Reteste
+                    </a>
+                    <a class="dropdown-item" href="{% url 'retestado' %}">
+                        <i class="material-icons">done</i> Retestados
+                    </a>
+                </div>
+            </li>
+        </ul>
+        <a href="{% url 'login_view' %}"</a>
+            <i class="material-icons">logout</i>
+            <span>Sair</span>
+        
+    </a>
+    </div>
+    
+
+    <div class="main-content">
+        <div class="container-fluid py-4">
+            <h1 class="text-center">Visão geral Estoque</h1>
+            <div class="row justify-content-center">
+                <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Equipamentos Cadastrados</p>
+                                <h4 class="mb-0">{{ registrados_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Equipamentos em Teste</p>
+                                <h4 class="mb-0">{{ em_teste_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Equipamentos Testados</p>
+                                <h4 class="mb-0">{{ testados_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% comment %} <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Equipamentos para Reteste</p>
+                                <h4 class="mb-0">{{ reteste_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+            <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Equipamentos para Campo</p>
+                            <h4 class="mb-0">{{ emcampo_count }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <!-- Gráfico -->
+             <div class="row justify-content-center mt-5">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Gráfico de Estoque</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="graficoEstoque" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var ctx = document.getElementById('graficoEstoque').getContext('2d');
+        var graficoEstoque = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Equipamentos',
+                    data: {{ data|safe }},
+                    backgroundColor: ['#671aeb','#5808a3','#8831aa'],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdown = document.querySelector('.dropbtn');
+            const dropdownContent = document.querySelector('.dropdown-content');
+        
+            dropdown.addEventListener('click', () => {
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            });
+        
+            window.addEventListener('click', (event) => {
+                if (!event.target.matches('.dropbtn')) {
+                    if (dropdownContent.style.display === 'block') {
+                        dropdownContent.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script> 
+
+</body> 
+</html>

@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <title>RE4</title>
+        <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
+        <link rel="stylesheet" href="{% static 'app/css/Cadastros.css' %}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    </head>
+    <body>
+        <div class="sidebar">
+            <a class="nav-link" href="{% url 'menu_view' %}">
+                <span class="font-weight-bold">Estoque TI</span>
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownEquipamentos">
+                        <i class="material-icons">devices</i>
+                        <span>Equipamentos</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'register' %}">
+                            <i class="material-icons">add</i> Cadastrar
+                        </a>
+                        <a class="dropdown-item" href="{% url 'list_equipamentos' %}">
+                            <i class="material-icons">view_list</i> Cadastrados
+                        </a>
+                        <a class="dropdown-item" href="{% url 'campo' %}">
+                            <i class="material-icons">assignment</i> Para Campo
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownTestar" role="button">
+                        <i class="material-icons">build</i>
+                        <span>Testar</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'testar' %}">
+                            <i class="material-icons">check</i> Equipamento
+                        </a>
+                        <a class="dropdown-item" href="{% url 'teste_concluido' %}">
+                            <i class="material-icons">done_all</i> Testados
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdownRetorno" role="button">
+                        <i class="material-icons">repeat</i>
+                        <span>Retorno</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'equipamento_reteste' %}">
+                            <i class="material-icons">autorenew</i> Reteste
+                        </a>
+                        <a class="dropdown-item" href="{% url 'retestado' %}">
+                            <i class="material-icons">done</i> Retestados
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="box">
+            <section class="header">
+              <h2>Cadastrar Equipamento</h2>
+            </section>
+        
+            <form id="form-conten"
+            id="form" class="form"
+            class="form-content"
+            >
+                <ul>
+                    <li>
+                        <label for="equipamento">Equipamento</label>
+                        <select id="equipamento" name="equipamento">
+                            <option value=" "> </option>
+                            <option value="Roteador">Roteador</option>
+                            <option value="ONU">ONU</option>
+                            <option value="ONU Telefonia">ONU Telefonia</option>
+                            <option value="ONT">ONT</option>
+                            <option value="ATA">ATA</option>
+			                <option value="Switch">Switch</option>
+                            <option value="Telefone Fixo">Telefone Fixo</option>
+                            <option value="Telefone Celular">Telefone Celular</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label for="modelo">Modelo</label>
+                        <select id="modelo" name="modelo">
+                            <option value=" "> </option>
+                            <option value="HUAWEI WiFi WS5200">HUAWEI WiFi WS5200</option>
+                            <option value="HUAWEI WiFi AX2S">HUAWEI WiFi AX2S</option>
+                            <option value="Archer C50 v4">Archer C50 v4</option>
+                            <option value="EC220-G5 v2">EC220-G5 v2</option>
+                            <option value="TX-6610">TX-6610</option>
+                            <option value="XZ000-G3">XZ000-G3</option>
+                            <option value="TL-SG1005D">TL-SG1005D</option>
+                            <option value="MS108G">MS108G</option>
+                            <option value="LS1008G">LS1008G</option>
+                            <option value="ZXHN H199A">ZXHN H199A</option>
+                            <option value="F670L">F670L</option>
+                            <option value="F6600P">F6600P</option>
+                            <option value="F601V7.0">F601V7.0</option>
+                            <option value="F612V9.2">F612V9.2</option>
+                            <option value="AN5506-01-A">AN5506-01-A</option>
+                            <option value="AN5506-02-B">AN5506-02-B</option>
+                            <option value="DM986-100">DM986-100</option>
+                            <option value="LS108G">LS108G</option>
+                            <option value="DIR-878">DIR-878</option>
+                            <option value="DIR-819">DIR-819</option>
+                            <option value="Archer C7">Archer C7</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label for="fabricante">Fabricante</label>
+                        <select id="fabricante" name="fabricante">
+                            <option value=" "> </option>
+                            <option value="ZTE">ZTE</option>
+                            <option value="Motorola">D-link</option>
+                            <option value="TP-Link">TP-Link</option>
+                            <option value="SUMEC">SUMEC</option>
+                            <option value="Datacom">Datacom</option>
+                            <option value="FiberHome">FiberHome</option>
+                            <option value="Linksys">Linksys</option>
+                            <option value="Mercusys">Mercusys</option>
+                            <option value="Huawei">Huawei</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Motorola">Motorola</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label for="problema">Problema relatado</label>
+                        <select id="problema" name="problema">
+                            <option value=" "> </option>
+                            <option value="Equipamento queimado">Equipamento queimado</option>
+                            <option value="Não realiza autenticação">Não realiza autenticação</option>
+                            <option value="Limitando Velocidade">Limitando Velocidade</option>
+			                <option value="Problema com Wifi">Problema com Wifi</option>
+                            <option value="Porta Wan queimada">Porta Wan queimada</option>
+                            <option value="Porta Lan queimada">Porta Lan queimada</option>
+                            <option value="Não liga">Não liga</option>
+                            <option value="Não reseta">Não reseta</option>
+                            <option value="Piscando Loss">Piscando Loss</option>
+                            <option value="Piscando Loss">Equipamento Atenuado</option>
+                            <option value="Equipamento OK">Equipamento OK</option>
+			                <option value="Sem Relato">Sem Relato</option>
+                        </select>
+                    </li>
+                    <li>
+                        <label for="mac">MAC</label>
+                        <input type="text" id="mac" name="mac">
+                    </li>
+                </ul>
+                <button type="button" onclick="addEquipamento()">Cadastrar</button>
+            </form>
+        
+          </div>
+ 
+            <script>
+                async function addEquipamento() {
+                    const equipamento = document.getElementById('equipamento').value;
+                    const modelo = document.getElementById('modelo').value;
+                    const fabricante = document.getElementById('fabricante').value;
+                    const problema = document.getElementById('problema').value;
+                    const mac = document.getElementById('mac').value;
+                    
+                    if (equipamento && modelo && fabricante && problema && mac) {
+                        const response = await fetch("{% url 'add_equipamento' %}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}',
+                            },
+                            body: JSON.stringify({
+                                equipamento,
+                                modelo,
+                                fabricante,
+                                problema,
+                                mac,
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert(data.success);
+                            location.reload(); 
+                        } else {
+                            alert(data.error || 'Erro ao registrar');
+                        }
+                    } else {
+                        alert('Por favor, preencha todos os campos.');
+                    }
+                }
+            </script>
+        </main> 
+    </body>
+</html>

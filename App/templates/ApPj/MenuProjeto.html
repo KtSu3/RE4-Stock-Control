@@ -1,0 +1,142 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>RE4</title>
+    <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>    
+    <div class="sidebar">
+        <a class="nav-link" href="{% url 'menu_projeto' %}">
+            <span class="font-weight-bold">Projeto</span>
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownEquipamentos">
+                    <i class="material-icons">check</i>
+                    <span>Viabilidades</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'cv' %}">
+                        <i class="material-icons">add</i> Cadastrar
+                    </a>
+                    <a class="dropdown-item" href="{% url 'vc' %}">
+                        <i class="material-icons">view_list</i> Cadastradas
+                    </a>
+                    
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdownTestar" role="button">
+                    <i class="material-icons">build</i>
+                    <span>Técnicos</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'ct' %}">
+                        <i class="material-icons">check</i> Cadastrar
+                    </a>
+                    <a class="dropdown-item" href="{% url 'tc' %}">
+                        <i class="material-icons">done_all</i> Cadastrados
+                    </a>
+                </div>
+            </li>
+            
+        </ul>
+        <a href="{% url 'login_view' %}"</a>
+        <i class="material-icons">logout</i>
+        <span>Sair</span>
+        
+    </a>
+    </div>
+  
+
+    <div class="main-content">
+        <div class="container-fluid py-4">
+            <h1 class="text-center">Visão geral Projeto</h1>
+            <div class="row justify-content-center">
+                <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Viabilidades Cadastradas</p>
+                                <h4 class="mb-0">{{ viabilidades_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-4 card-container">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Registro com Técnicos</p>
+                                <h4 class="mb-0">{{ tecnicos_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% comment %} <!-- Gráfico -->
+            <div class="row justify-content-center mt-5">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Gráfico Projeto</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="graficoProjeto" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+    
+    <script>
+        var ctx = document.getElementById('graficoProjeto').getContext('2d');
+        var graficoProjeto = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Viabilidades',
+                    data: {{ data|safe }},
+                    backgroundColor: ['#671aeb','#5808a3','#8831aa'],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdown = document.querySelector('.dropbtn');
+            const dropdownContent = document.querySelector('.dropdown-content');
+        
+            dropdown.addEventListener('click', () => {
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            });
+        
+            window.addEventListener('click', (event) => {
+                if (!event.target.matches('.dropbtn')) {
+                    if (dropdownContent.style.display === 'block') {
+                        dropdownContent.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+
+</body> 
+</html>
