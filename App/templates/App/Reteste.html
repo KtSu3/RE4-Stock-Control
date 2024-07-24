@@ -10,7 +10,6 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        
     </head>
     <body>
         <div class="sidebar">
@@ -64,33 +63,29 @@
                     </div>
                 </li>
             </ul>
-            <!--PROJETO-->
-        
         </div>
-
- <!--Teste-->
 
         <main class="table" id="customers_table">
             <section class="table__header">
                 <h1>Equipamentos para Reteste</h1>
                 <div class="input-group">
                     <input id="search-mac" type="text" placeholder="Procurar pelo MAC">
-                    
                 </div>
-                {% comment %} <div class="export__file">
+                {% comment %} 
+                <div class="export__file">
                     <label for="export-file" class="export__file-btn" title="Export File"></label>
                     <input type="checkbox" id="export-file">
-                     <div class="export__file-options">
+                    <div class="export__file-options">
                         <label>Export As &nbsp; &#10140;</label>
                         <label for="export-file" id="toPDF">PDF<img src="img/pdf.png" alt=""></label>
                         <label for="export-file" id="toCSV">CSV<img src="img/csv.png" alt=""></label>
                         <label for="export-file" id="toEXCEL">EXCEL <img src="img/excel.png" alt=""></label>
-                    </div> 
-                </div> {% endcomment %}
+                    </div>
+                </div>
+                {% endcomment %}
             </section>
             <section class="table__body">
                 <table id="equipamentos-registrados-table">
-                <table>
                     <thead>
                         <tr>
                             <th>Equipamento<span class="icon-arrow">&UpArrow;</span></th>
@@ -100,78 +95,100 @@
                             <th>MAC<span class="icon-arrow">&UpArrow;</span></th>
                             <th>Conclusão do Teste<span class="icon-arrow">&UpArrow;</span></th>
                             <th>Mudar Status<span class="icon-arrow">&UpArrow;</span></th>
-                            
                         </tr>
                     </thead>
                     <tbody>
-                        {% for equipamento in reteste %}
-                            <tr>
-                                <td>{{ equipamento.equipamento }}</td>
-                                <td>{{ equipamento.modelo }}</td>
-                                <td>{{ equipamento.fabricante }}</td>
-                                <td>{{ equipamento.problema }}</td>
-                                <td>{{ equipamento.mac }}</td>
-                                <td><textarea class="relato-teste" data-id="{{ equipamento.id }}"></textarea></td>
-                        <td>
-                            <button class="mudar-status-btn" data-id="{{ equipamento.id }}" data-status="RE">Mudar para Retestado</button>
-                        </td>
-                               
-                                
-                            </tr>
+                        {% for equipamento in page_obj %}
+                        <tr>
+                            <td>{{ equipamento.equipamento }}</td>
+                            <td>{{ equipamento.modelo }}</td>
+                            <td>{{ equipamento.fabricante }}</td>
+                            <td>{{ equipamento.problema }}</td>
+                            <td>{{ equipamento.mac }}</td>
+                            <td><textarea class="relato-teste" data-id="{{ equipamento.id }}"></textarea></td>
+                            <td>
+                                <button class="mudar-status-btn" data-id="{{ equipamento.id }}" data-status="RE">Mudar para Retestado</button>
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </section>
+            <section class="pagination">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </section>
         </main>
 
-            <script>
-                document.querySelectorAll('.mudar-status-btn').forEach(function(button) {
-                    button.addEventListener('click', function() {
-                        const equipamentoId = button.getAttribute('data-id');
-                        const newStatus = button.getAttribute('data-status');
-                        const relatoTeste = document.querySelector(`textarea[data-id="${equipamentoId}"]`).value;
-        
-                        const confirmation = confirm('Deseja mudar o status do equipamento?');
-                        if (confirmation) {
-                            fetch("{% url 'mudar_status_retestado' %}", {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRFToken': '{{ csrf_token }}',
-                                },
-                                body: JSON.stringify({ id: equipamentoId, status: newStatus, relato_teste: relatoTeste })
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert('Status do equipamento alterado com sucesso!');
-                                    location.reload(); 
-                                } else {
-                                    alert('Erro ao mudar o status do equipamento.'); 
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Erro ao processar a requisição:', error);
-                            });
-                        }
-                    });
-                });
+        <script>
+            document.querySelectorAll('.mudar-status-btn').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const equipamentoId = button.getAttribute('data-id');
+                    const newStatus = button.getAttribute('data-status');
+                    const relatoTeste = document.querySelector(`textarea[data-id="${equipamentoId}"]`).value;
 
-                document.getElementById('search-mac').addEventListener('keyup', function() {
-                    const filter = this.value.toUpperCase();
-                    const table = document.getElementById('equipamentos-registrados-table');
-                    const tr = table.getElementsByTagName('tr');
-            
-                    for (let i = 1; i < tr.length; i++) {
-                        const td = tr[i].getElementsByTagName('td')[4];
-                        if (td) {
-                            const txtValue = td.textContent || td.innerText;
-                            tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
-                        }
+                    const confirmation = confirm('Deseja mudar o status do equipamento?');
+                    if (confirmation) {
+                        fetch("{% url 'mudar_status_retestado' %}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}',
+                            },
+                            body: JSON.stringify({ id: equipamentoId, status: newStatus, relato_teste: relatoTeste })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Status do equipamento alterado com sucesso!');
+                                location.reload();
+                            } else {
+                                alert('Erro ao mudar o status do equipamento.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao processar a requisição:', error);
+                        });
                     }
                 });
-            </script>
-        </div>
-    </main>
-</body>
+            });
+
+            document.getElementById('search-mac').addEventListener('keyup', function() {
+                const filter = this.value.toUpperCase();
+                const table = document.getElementById('equipamentos-registrados-table');
+                const tr = table.getElementsByTagName('tr');
+
+                for (let i = 1; i < tr.length; i++) {
+                    const td = tr[i].getElementsByTagName('td')[4];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
+                    }
+                }
+            });
+        </script>
+    </body>
 </html>

@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
 </head>
 <body>    
     <div class="sidebar">
@@ -30,7 +29,6 @@
                     <a class="dropdown-item" href="{% url 'vc' %}">
                         <i class="material-icons">view_list</i> Cadastradas
                     </a>
-                    
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -47,78 +45,96 @@
                     </a>
                 </div>
             </li>
-            
         </ul>
-  
     </div>
     
-        <main class="table" id="customers_table">
-            <section class="table__header">
-                <h1>Técnicos Cadastrados</h1>
-                <div class="input-group">
-                    <input type="Pesquisar" placeholder="Procurar por Projetista ou Técnico">
-                    
-                </div>
-                {% comment %} <div class="export__file">
-                    <label for="export-file" class="export__file-btn" title="Export File"></label>
-                    <input type="checkbox" id="export-file">
-                    <div class="export__file-options">
-                        <label>Export As &nbsp; &#10140;</label>
-                        <label for="export-file" id="toPDF">PDF<img src="img/pdf.png" alt=""></label>
-                        <label for="export-file" id="toCSV">CSV<img src="img/csv.png" alt=""></label>
-                        <label for="export-file" id="toEXCEL">EXCEL <img src="img/excel.png" alt=""></label>
-                    </div> {% endcomment %}
-                </div>
-            </section>
-            <section class="table__body">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Projetista<span class="icon-arrow">&UpArrow;</span></th>
-                            <th>Técnico<span class="icon-arrow">&UpArrow;</span></th>
-                            <th>Assunto<span class="icon-arrow">&UpArrow;<span></th>
-                            <th>Informações do Atendimento<span class="icon-arrow">&UpArrow;</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for tecnicos in tecnicos %}
-                        <tr>
-                            <td>{{ tecnicos.projeto_responsavel }}</td>
-                            <td>{{ tecnicos.tecnico_responsavel }}</td>
-                            <td>{{tecnicos.assunto}}</td>
-                            <td>{{ tecnicos.info_atendimento }}</td>
-                           
-                        </tr>
-                        
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-        </main>
-        <script>
-            document.getElementById('search-projetista').addEventListener('keyup', function() {
-                filterTable('search-projetista', 0);
-            });
-            document.getElementById('search-vendedor').addEventListener('keyup', function() {
-                filterTable('search-vendedor', 1);
-            });
-            function filterTable(inputId, columnIndex) {
-                const input = document.getElementById(inputId);
-                const filter = input.value.toUpperCase();
-                const table = document.getElementById('table__body');
-                const tr = table.getElementsByTagName('tr');
-                for (let i = 1; i < tr.length; i++) {
-                    const td = tr[i].getElementsByTagName('td')[columnIndex];
-                    if (td) {
-                        const txtValue = td.textContent || td.innerText;
+    <main class="table" id="customers_table">
+        <section class="table__header">
+            <h1>Técnicos Cadastrados</h1>
+            <div class="input-group">
+                <input id="search-projetista" type="text" placeholder="Procurar por Projetista ou Técnico">
+            </div>
+        </section>
+        <section class="table__body" id="tecnicos-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Projetista<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Técnico<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Assunto<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Informações do Atendimento<span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tecnico in page_obj %}
+                    <tr>
+                        <td>{{ tecnico.projeto_responsavel }}</td>
+                        <td>{{ tecnico.tecnico_responsavel }}</td>
+                        <td>{{ tecnico.assunto }}</td>
+                        <td>{{ tecnico.info_atendimento }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        <section class="pagination">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </section>
+        
+    </main>
+    <script>
+        document.getElementById('search-projetista').addEventListener('keyup', function() {
+            filterTable(this.value);
+        });
+
+        function filterTable(query) {
+            const filter = query.toUpperCase();
+            const table = document.getElementById('tecnicos-table').getElementsByTagName('tbody')[0];
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let match = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const txtValue = cells[j].textContent || cells[j].innerText;
                         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                            tr[i].style.display = '';
-                        } else {
-                            tr[i].style.display = 'none';
+                            match = true;
+                            break;
                         }
                     }
                 }
+
+                rows[i].style.display = match ? '' : 'none';
             }
-        </script>
-    </body>
+        }
+    </script>
+    <script src="https://kit.fontawesome.com/998c60ef77.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/login2.js' %}"></script>
+</body>
 </html>

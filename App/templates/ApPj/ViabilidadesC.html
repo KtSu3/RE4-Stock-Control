@@ -7,12 +7,10 @@
     <title>RE4</title>
     <link rel="stylesheet" href="{% static 'app/css/Menu.css' %}">
     <link rel="stylesheet" href="{% static 'app/css/Cadastrados.css' %}">
-    <link rel='stylesheet' href="{% static 'app/css/ViabilidadesC' %}">
+    <link rel="stylesheet" href="{% static 'app/css/ViabilidadesC.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-    
 </head>
 <body>    
     <div class="sidebar">
@@ -32,7 +30,6 @@
                     <a class="dropdown-item" href="{% url 'vc' %}">
                         <i class="material-icons">view_list</i> Cadastradas
                     </a>
-                    
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -49,89 +46,86 @@
                     </a>
                 </div>
             </li>
-            
         </ul>
     </div>
     
-        <main class="table" id="customers_table">
-            <section class="table__header">
-                <h1>Viabilidades Cadastradas</h1>
-                <div class="input-group">
-                    <input type="Pesquisar" placeholder="Procurar por Projetista ou Vendedor">
-                    
-                </div>
-                {% comment %} <div class="export__file">
-                    <label for="export-file" class="export__file-btn" title="Export File"></label>
-                    <input type="checkbox" id="export-file">
-                    <div class="export__file-options">
-                        <label>Export As &nbsp; &#10140;</label>
-                        <label for="export-file" id="toPDF">PDF<img src="img/pdf.png" alt=""></label>
-                        <label for="export-file" id="toCSV">CSV<img src="img/csv.png" alt=""></label>
-                        <label for="export-file" id="toEXCEL">EXCEL <img src="img/excel.png" alt=""></label>
-                    </div> {% endcomment %}
-                </div>
-            </section>
-            <section class="table__body">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Projetista<span class="icon-arrow">&UpArrow;</span></th>
-                            <th>Vendedor<span class="icon-arrow">&UpArrow;</span></th>
-                            <th>Descrição Projetista<span class="icon-arrow">&UpArrow;</span></th>
-                            <th>Descrição Vendedor<span class="icon-arrow">&UpArrow;</span></th>
-                            <th>Viavel?<span class="icon-arrow">&UpArrow;</span></th>
-                            {% comment %} <th>Data<span class="icon-arrow">&UpArrow;</span></th> {% endcomment %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for viabilidade in viabilidades %}
-                        <tr>
-                            <td>{{ viabilidade.projeto_responsavel }}</td>
-                            <td>{{ viabilidade.comercial_responsavel }}</td>
-                            <div class="tamanho">
-                            <td>{{ viabilidade.descricao_projeto }}</td>
-                            <td>{{ viabilidade.descricao_comercial }}</td>
-                            </div>
-                            <td>{{ viabilidade.status }}</td>
-                            {% comment %} <td>{{ viabilidade.coluna_timestamp }}</td> {% endcomment %}
-                        </tr>
-                        
-                        {% endfor %}
-                    </tbody>
-                </table>
-              
-            </section>
-            {% comment %} <div class="pagination-container">
-                <button id="prev-button">Anterior</button>
-                <span id="page-info"></span>
-                <button id="next-button">Próximo</button>
-            </div> {% endcomment %}
-            
+    <main class="table" id="customers_table">
+        <section class="table__header">
+            <h1>Viabilidades Cadastradas</h1>
+            <div class="input-group">
+                <input id="search-projetista" type="text" placeholder="Procurar por Projetista ou Vendedor">
+            </div>
+        </section>
+        <section class="table__body">
+            <table id="viabilidades-table">
+                <thead>
+                    <tr>
+                        <th>Projetista<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Vendedor<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Descrição Projetista<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Descrição Vendedor<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Viavel?<span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for viabilidade in page_obj %}
+                    <tr>
+                        <td>{{ viabilidade.projeto_responsavel }}</td>
+                        <td>{{ viabilidade.comercial_responsavel }}</td>
+                        <td class="tamanho">{{ viabilidade.descricao_projeto }}</td>
+                        <td class="tamanho">{{ viabilidade.descricao_comercial }}</td>
+                        <td>{{ viabilidade.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        <section class="pagination">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </section>
     </main>
-        <script>
-            document.getElementById('search-projetista').addEventListener('keyup', function() {
-                filterTable('search-projetista', 0);
-            });
-            document.getElementById('search-vendedor').addEventListener('keyup', function() {
-                filterTable('search-vendedor', 1);
-            });
-            function filterTable(inputId, columnIndex) {
-                const input = document.getElementById(inputId);
-                const filter = input.value.toUpperCase();
-                const table = document.getElementById('viabilidades-table');
-                const tr = table.getElementsByTagName('tr');
-                for (let i = 1; i < tr.length; i++) {
-                    const td = tr[i].getElementsByTagName('td')[columnIndex];
-                    if (td) {
-                        const txtValue = td.textContent || td.innerText;
-                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                            tr[i].style.display = '';
-                        } else {
-                            tr[i].style.display = 'none';
-                        }
-                    }
+
+    <script>
+        document.getElementById('search-projetista').addEventListener('keyup', function() {
+            const filter = this.value.toUpperCase();
+            const table = document.getElementById('viabilidades-table');
+            const tr = table.getElementsByTagName('tr');
+            for (let i = 1; i < tr.length; i++) {
+                const projetistaTd = tr[i].getElementsByTagName('td')[0];
+                const vendedorTd = tr[i].getElementsByTagName('td')[1];
+                if (projetistaTd || vendedorTd) {
+                    const projetistaTxt = projetistaTd ? projetistaTd.textContent || projetistaTd.innerText : '';
+                    const vendedorTxt = vendedorTd ? vendedorTd.textContent || vendedorTd.innerText : '';
+                    tr[i].style.display = (projetistaTxt.toUpperCase().indexOf(filter) > -1 || vendedorTxt.toUpperCase().indexOf(filter) > -1) ? '' : 'none';
                 }
-            };
-        </script>
-    </body>
+            }
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/998c60ef77.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/login2.js' %}"></script>
+</body>
 </html>

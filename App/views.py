@@ -6,6 +6,7 @@ from .models import EquipamentoRegistrado, EquipamentoEmTeste, EquipamentoTestad
 from django.contrib.auth import authenticate, login
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 #----------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 #Views HTML Render
@@ -28,43 +29,68 @@ def index(request):
 @login_required
 def list_reteste(request):
     reteste = EquipamentoReteste.objects.all()
+    paginator = Paginator(reteste, 30)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'App/Reteste.html', {
-        'reteste': reteste,
+        'page_obj': page_obj,
     })
 
 @login_required
 def campo(request):
     emcampo = EquipamentoParaCampo.objects.filter(status=Status.CAMPO)
-    return render(request, 'App/EqCampo.html', {'emcampo': emcampo})
+    paginator = Paginator(emcampo, 200)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'App/EqCampo.html', {'page_obj': page_obj})
 
 @login_required
 def tc(request):
     tecnicos = CadastroTecnicos.objects.filter()
-    return render(request, 'ApPj/TecCadastrados.html', {'tecnicos': tecnicos})
+    paginator = Paginator(tecnicos, 200)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'ApPj/TecCadastrados.html', {'page_obj': page_obj})
 
 @login_required
 def teste_concluido(request):
     equipamentos = EquipamentoTestado.objects.all()
-    return render(request, 'App/EqTestados.html', {'equipamentos': equipamentos})
+    paginator = Paginator(equipamentos, 200)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'App/EqTestados.html', {'page_obj': page_obj})
 
 @login_required
 def retestado(request):
     equipamentos = EquipamentoRetestado.objects.all()
-    return render(request, 'App/EqRetestados.html', {'equipamentos': equipamentos})
+    paginator = Paginator(equipamentos, 30)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'App/EqRetestados.html', {'page_obj': page_obj})
+
 @login_required
 def vc(request):
     viabilidades = CadastroViabilidade.objects.all()
-    return render(request, 'ApPj/ViabilidadesC.html', {'viabilidades': viabilidades})
+    paginator = Paginator(viabilidades, 200)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'ApPj/ViabilidadesC.html', {'page_obj': page_obj})
 
 
 @login_required
 def testar(request):
     emteste = EquipamentoEmTeste.objects.all()
-    return render(request, 'App/Testar.html', {'emteste': emteste})
+    paginator = Paginator(emteste, 30)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'App/Testar.html', {'page_obj': page_obj})
 
 @login_required
 def list_equipamentos(request):
     registrados = EquipamentoRegistrado.objects.filter(status='C')
+    paginator = Paginator(registrados, 30)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     em_teste = EquipamentoEmTeste.objects.filter(status='ET')
     testados = EquipamentoTestado.objects.filter(status='Testado')
     retestado = EquipamentoRetestado.objects.filter(status='Retestado')
@@ -72,7 +98,7 @@ def list_equipamentos(request):
     
 
     return render(request, 'App/EqCadastrados.html', {  
-        'registrados': registrados,
+        'page_obj': page_obj,
         'em_teste': em_teste,
         'testados': testados,
         'retestado': retestado,
