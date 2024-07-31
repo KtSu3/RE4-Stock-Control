@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from App import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -35,7 +35,7 @@ urlpatterns = [
     path('menu_projeto/', login_required(views.menu_projeto), name='menu_projeto'),
     path('ct/', login_required(views.ct), name='ct'),
     path('tc/', login_required(views.tc), name='tc'),
-   
+    path('api/', include('App.urls')),
     
 ]   
 

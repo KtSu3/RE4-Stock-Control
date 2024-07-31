@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 
 
@@ -53,7 +50,6 @@ class EquipamentoTestado(models.Model):
     data_teste = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     campo = models.CharField(max_length=1, choices=Campo1.choices)
-
 
     def __str__(self):
         return f"{self.modelo} - {self.equipamento} - {self.fabricante} - {self.problema} - {self.mac} - {self.relato_teste} - {self.status} - {self.data_teste} - {self.modelo}"

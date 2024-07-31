@@ -23,10 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'App'
+    'App',
+    'corsheaders',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -111,3 +115,10 @@ MEDIA_URL = '/Filles/'
 LANGUAGE_CODE = 'en-us'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_ALLORIGINS = True
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_CREDENTIALS = True
+CRSF_TRUSTED_ORIGINS = [
+    ''
+]

@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from rest_framework import viewsets
 from django.views.decorators.csrf import csrf_exempt
 import json
+from .serializers import ListVSerializer
 from .models import EquipamentoRegistrado, EquipamentoEmTeste, EquipamentoTestado, EquipamentoReteste, EquipamentoRetestado, EquipamentoParaCampo, CadastroViabilidade, CadastroTecnicos, Status
 from django.contrib.auth import authenticate, login
 from .forms import CustomUserCreationForm
@@ -22,6 +24,15 @@ def index(request):
     return render(request, 'App/Index.html')
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------#
+#API response
+class ListViewSet(viewsets.ModelViewSet):
+    queryset = CadastroViabilidade.objects.all()
+    serializer_class = ListVSerializer
+
+
+
+
+
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------#
 #Views para exibir Banco
