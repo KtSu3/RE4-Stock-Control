@@ -116,9 +116,11 @@ LANGUAGE_CODE = 'en-us'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALLORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOW_CREDENTIALS = True
 CRSF_TRUSTED_ORIGINS = [
-    ''
+    'https://re4.yukalinetelecom.com.br',
+    'http://re4.yukalinetelecom.com.br',
+    os.getenv('API')
 ]
